@@ -81,10 +81,10 @@ class Host:
     # @param data_S: data being transmitted to the network layer
     def udt_send(self, dst_addr, data_S):
         while data_S is not '':
-            p = NetworkPacket(dst_addr, data_S[:50])
+            p = NetworkPacket(dst_addr, data_S[:40])
             self.out_intf_L[0].put(p.to_byte_S()) #send packets always enqueued successfully
             print('%s: sending packet "%s" out interface with mtu=%d' % (self, p, self.out_intf_L[0].mtu))
-            data_S = data_S[50:]
+            data_S = data_S[40:]
         
     ## receive packet from the network layer
     def udt_receive(self):
