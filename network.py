@@ -109,7 +109,10 @@ class NetworkPacket:
 ## Implements a network host for receiving and transmitting data
 class Host:
     
+    # Packet fragments
     fragmented_packets = defaultdict(list)
+    
+    # List of packet keys that have received the last packet, but are missing others
     floating_packets = []
     header_length = 8
     
@@ -138,26 +141,32 @@ class Host:
     def udt_receive(self):
         pkt_S = self.in_intf_L[0].get()
         if pkt_S is not None:
+            # This assignment will be needed for later changes
             key = self.parse_packet(pkt_S)
             
-        
-     
+    # Split the packet and add it to the fragment list
     def parse_packet(self, p):
+        #Split into header and message
         header = p[:self.header_length]
         message = p[self.header_length:]
         
+        # Key is a combination of the packet source and the parent packet from that source
         key = str(header[6:7]) + str(header[2:4])
         
+        # Add the key if it does not exist already
         if self.fragmented_packets.get(key) is None:
             self.fragmented_packets[key] = []
         
+        # Add the flag plus message to the fragment list
         self.fragmented_packets[key].append(str(header[5:6]) + message)
         
+        # If the received packet is the last in that datagram, check if it is complete
         if header[4:5] is '0':
             self.check_completeness(key)
         
         return key
         
+    # Look through all fragments for a particular datagram to see if all have been received
     def check_completeness(self, key):
         # Create temporary list for removal
         temp_fragments = self.fragmented_packets.get(key)
