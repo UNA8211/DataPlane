@@ -187,8 +187,11 @@ class Host:
             # Fail if we've gone through an iteration without finding the next sequential fragment
             # i.e we are missing some fragments
             if temp_offset == current_offset:
+                if key not in self.floating_packets:
+                    self.floating_packets.append(key)
                 return
-        print()
+        if key in self.floating_packets:
+            self.floating_packets.remove(key)
         print('All packets received from source %d with parent datagram %d' % (int(key[:1]) , int(key[1:])))  
         print('%s: received packet "%s"' % (self, finished_message))
     ## thread target for the host to keep receiving data

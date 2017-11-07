@@ -43,7 +43,6 @@ if __name__ == '__main__':
     for t in thread_L:
         t.start()
     
-    
     #create some send events    
     for i in range(1):
         client.udt_send(2, 'Sending a much larger message this time for the first part of the project where message is big %d' % i)
