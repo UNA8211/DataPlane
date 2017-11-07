@@ -13,11 +13,11 @@ from collections import defaultdict
 router_queue_size = 0 #0 means unlimited
 simulation_time = 1 #give the network sufficient time to transfer all packets before quitting
 
-# creates a routing table from a sequence of src/dst pairings
+# creates a routing table from a sequence of src-addr/dst-link pairings
 def createRoutingTable(seq):
     d = defaultdict(int)
     for k, v in seq:
-        d[k].append(v)
+        d[k] = v
 
     return d
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     object_L.append(client)
     server = network.Host(2)
     object_L.append(server)
-    router_a = network.Router(name='A', intf_count=1, max_queue_size=router_queue_size, routing_table=)
+    router_a = network.Router(name='A', intf_count=1, max_queue_size=router_queue_size, routing_table=createRoutingTable([(1,0), (2,0)]))
     object_L.append(router_a)
 
     #create a Link Layer to keep track of links between network nodes

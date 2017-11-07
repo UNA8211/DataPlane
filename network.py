@@ -85,7 +85,7 @@ class Host:
     # @param data_S: data being transmitted to the network layer
     def udt_send(self, dst_addr, data_S):
         while data_S is not '':
-            p = NetworkPacket(dst_addr, data_S[:40])
+            p = NetworkPacket(dst_addr, data_S[:40], self.addr)
             self.out_intf_L[0].put(p.to_byte_S()) #send packets always enqueued successfully
             print('%s: sending packet "%s" out interface with mtu=%d' % (self, p, self.out_intf_L[0].mtu))
             data_S = data_S[40:]
@@ -122,7 +122,7 @@ class Router:
         self.in_intf_L = [Interface(max_queue_size) for _ in range(intf_count)]
         self.out_intf_L = [Interface(max_queue_size) for _ in range(intf_count)]
         # add routing table
-        self.routingTable = routing_table
+        self.routing_table = routing_table
 
     ## called when printing the object
     def __str__(self):
@@ -139,12 +139,13 @@ class Router:
                 #if packet exists make a forwarding decision
                 if pkt_S is not None:
                     p = NetworkPacket.from_byte_S(pkt_S) #parse a packet out
-                    # HERE you will need to implement a lookup into the
-                    # forwarding table to find the appropriate outgoing interface
-                    # for now we assume the outgoing interface is also i
-                    self.out_intf_L[i].put(p.to_byte_S(), True)
+
+                    # forward to out interface based on routing table entry
+                    dst_int = self.routing_table[p.src_addr]
+                    self.out_intf_L[dst_int].put(p.to_byte_S(), True)
+
                     print('%s: forwarding packet "%s" from interface %d to %d with mtu %d' \
-                        % (self, p, i, i, self.out_intf_L[i].mtu))
+                        % (self, p, i, dst_int, self.out_intf_L[i].mtu))
             except queue.Full:
                 print('%s: packet "%s" lost on interface %d' % (self, p, i))
                 pass
