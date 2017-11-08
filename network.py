@@ -142,7 +142,7 @@ class Host:
         pkt_S = self.in_intf_L[0].get()
         if pkt_S is not None:
             # This assignment will be needed for later changes
-            key = self.parse_packet(pkt_S)
+            self.parse_packet(pkt_S)
             
     # Split the packet and add it to the fragment list
     def parse_packet(self, p):
@@ -161,7 +161,7 @@ class Host:
         self.fragmented_packets[key].append(str(header[5:6]) + message)
         
         # If the received packet is the last in that datagram, check if it is complete
-        if header[4:5] is '0':
+        if header[4:5] is '0' or key in self.floating_packets:
             self.check_completeness(key)
         
         return key
@@ -202,6 +202,9 @@ class Host:
             self.udt_receive()
             #terminate
             if(self.stop):
+                if self.floating_packets is not []:
+                    print(self.floating_packets)
+                    print(threading.currentThread().getName() + ': Incomplete fragments still exist, not all data received')
                 print (threading.currentThread().getName() + ': Ending')
                 return
         
