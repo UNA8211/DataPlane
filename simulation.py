@@ -74,12 +74,11 @@ if __name__ == '__main__':
 
     for t in thread_L:
         t.start()
-    print("happy6")
 
     #create some send events
     for i in range(3):
-        print("p")
-        client1.udt_send(3, 'Sending a much larger message this time for the first part of the thing %d' % i)
+        client1.udt_send(3, 'third part %d' % i)
+        client2.udt_send(4, 'thirth part %d' % i)
 
 
     #give the network sufficient time to transfer all packets before quitting
