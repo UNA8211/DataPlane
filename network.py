@@ -13,7 +13,7 @@ class Interface:
     def __init__(self, maxsize=0):
         self.queue = queue.Queue(maxsize);
         self.mtu = None
-
+        
     ##get packet from the queue interface
     def get(self):
         try:
