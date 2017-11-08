@@ -29,7 +29,7 @@ if __name__ == '__main__':
     
     #add all the links
     link_layer.add_link(link.Link(client, 0, router_a, 0, 50))
-    link_layer.add_link(link.Link(router_a, 0, server, 0, 50))
+    link_layer.add_link(link.Link(router_a, 0, server, 0, 30))
     
     
     #start all the objects
@@ -43,10 +43,9 @@ if __name__ == '__main__':
     for t in thread_L:
         t.start()
     
-    
     #create some send events    
-    for i in range(3):
-        client.udt_send(2, 'Sending a much larger message this time for the first part of the thing %d' % i)
+    for i in range(1):
+        client.udt_send(2, 'Sending a much larger message this time for the first part of the project where message is big %d' % i)
     
     
     #give the network sufficient time to transfer all packets before quitting
